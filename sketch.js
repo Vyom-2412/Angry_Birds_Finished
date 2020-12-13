@@ -1,46 +1,55 @@
+var a1 = [1,2,3,4,5,6];
+console.log(a1);
+console.log(a1[3]);
+var a2 = [[1,2],[3,4,5],[24]];
+console.log(a2);
+console.log(a2[1][0]);
 const Engine = Matter.Engine;
 const World= Matter.World;
 const Bodies = Matter.Bodies;
 const Constraint = Matter.Constraint;
 
 var engine, world;
-var box1, box2, box3, box4, pig1, platform,slingshot;
+var box1, box2, box3, box4, pig1, platform,slingshot, background_image;
 
 function preload()
 {
-  background_image = loadImage("sprites/bg.png");
+  getBgIMG();
 }
 
 function setup(){
-    var canvas = createCanvas(1200,400);
-    engine = Engine.create();
-    world = engine.world;
+  var canvas = createCanvas(1200,400);
+  engine = Engine.create();
+  world = engine.world;
 
     
-    ground = new Ground(600,height,1200,20)
-    platform = new Ground(100,300,250,200);
-    box1 = new Box(700,320,70,70);
-    box2 = new Box(920,320,70,70);
-    pig1 = new Pig(810, 350);
-    log1 = new Log(810,260,300, PI/2);
+  ground = new Ground(600,height,1200,20)
+  platform = new Ground(100,300,250,200);
+  box1 = new Box(700,320,70,70);
+  box2 = new Box(920,320,70,70);
+  pig1 = new Pig(810, 350);
+  log1 = new Log(810,260,300, PI/2);
 
-    box3 = new Box(700,240,70,70);
-    box4 = new Box(920,240,70,70);
-    pig3 = new Pig(810, 220);
+  box3 = new Box(700,240,70,70);
+  box4 = new Box(920,240,70,70);
+  pig3 = new Pig(810, 220);
 
-    log3 =  new Log(810,180,300, PI/2);
+  log3 =  new Log(810,180,300, PI/2);
 
-    box5 = new Box(810,160,70,70);
-    log4 = new Log(760,120,150, PI/7);
-    log5 = new Log(870,120,150, -PI/7);
+  box5 = new Box(810,160,70,70);
+  log4 = new Log(760,120,150, PI/7);
+  log5 = new Log(870,120,150, -PI/7);
 
-    bird = new Bird(190,30);
+  bird = new Bird(190,30);
     slingshot = new Slingshot(bird.body,{x:190,y:30});
 
 }
 
 function draw(){
+    if(background_image)
+    {
     background(background_image);
+    }
     Engine.update(engine);
     
     box1.display();
@@ -80,4 +89,21 @@ function keyPressed()
   {
     slingshot.attach(bird.body);
   }
+}
+
+async function getBgIMG()
+{
+  var response = await fetch("http://worldtimeapi.org/api/timezone/Asia/Kolkata");
+  var response_json = await response.json();
+  var date_time = response_json.datetime;
+  var hour = date_time.slice(11,13);
+  if(hour>=06 && hour<= 19)
+  {
+    bg = "sprites/bg.png";
+  }
+  else
+  {
+    bg = "sprites/bg2.jpg";
+  }
+  background_image = loadImage(bg);
 }
