@@ -1,9 +1,3 @@
-var a1 = [1,2,3,4,5,6];
-console.log(a1);
-console.log(a1[3]);
-var a2 = [[1,2],[3,4,5],[24]];
-console.log(a2);
-console.log(a2[1][0]);
 const Engine = Matter.Engine;
 const World= Matter.World;
 const Bodies = Matter.Bodies;
@@ -11,6 +5,9 @@ const Constraint = Matter.Constraint;
 
 var engine, world;
 var box1, box2, box3, box4, pig1, platform,slingshot, background_image;
+var hit = 0;
+var birds = [];
+
 
 function preload()
 {
@@ -41,7 +38,12 @@ function setup(){
   log5 = new Log(870,120,150, -PI/7);
 
   bird = new Bird(190,30);
-    slingshot = new Slingshot(bird.body,{x:190,y:30});
+  bird2 = new Bird(145,90);
+  bird3 = new Bird(100,90);
+  birds.push(bird3);
+  birds.push(bird2);
+  birds.push(bird);
+  slingshot = new Slingshot(bird.body,{x:190,y:30});
 
 }
 
@@ -69,6 +71,8 @@ function draw(){
     log5.display();
 
     bird.display();
+    bird2.display();
+    bird3.display();
     slingshot.display();
 
 }
@@ -81,13 +85,23 @@ function mouseDragged()
 function mouseReleased()
 {
   slingshot.fly();
+  hit = hit+1;
+  if(hit == 2)
+  {
+    World.remove(world,birds[birds.length-1]);
+    birds.pop();
+  }  
 }
 
 function keyPressed()
 {
   if(keyCode == 32)
   {
-    slingshot.attach(bird.body);
+    if(birds.length>=0)
+    {
+    Matter.Body.setPosition(birds[birds.length-1].body,{x:190,y:30});
+    slingshot.attach(birds[birds.length-1].body);
+    }
   }
 }
 
